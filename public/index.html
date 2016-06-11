@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="speech.js"></script>
+    <meta charset="UTF-8">
+    <title>Chorus</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Chorus</a>
+            </div>
+        </div><!--/.navbar-collapse -->
+      </div>
+</nav>
+<div class="row">
+  <div class="col-md-12">
+      <img class="img-responsive center-block" src="img/microphone.png" id="button" alt="">
+  </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+         <h1 id="recognizedText"></h1>
+    </div>
+</div>
+
+<script>
+    var speech = SpeechToText;
+    var activeSTT;
+
+    function stopListening() {
+        if (activeSTT) {
+            activeSTT.stop();
+            activeSTT = null;
+        }
+    }
+    function listen() {
+        speech.listen({
+            onStart: function() {
+                console.log('starting');
+            },
+            onResult: function(e) {
+                console.log(e.text);
+                document.getElementById("recognizedText").innerHTML = e.text;
+                if (e.isFinal) {
+                    stopListening();
+                }
+            },
+            onError: function(e) {
+                console.log('error', e);
+            },
+            onEnd: function(e) {
+                console.log('end', e);
+                stopListening();
+            }
+        });
+    }
+
+    document.querySelector('#button').onclick = function () {
+        if (speech.isSupported) {
+            listen();
+        } else {
+            alert('speech not supported by this browser');
+        }
+
+    };
+
+</script>
+</body>
+</html>
